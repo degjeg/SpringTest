@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--配置之间的继承 依赖  -->
+    <bean id="bmw1" class="com.springtest.beans.Car" p:name="宝马5系" scope="prototype">
+        <property name="price" value="40000"/>
+        <property name="speed" value="280"/>
+        <property name="cop">
+            <value><![CDATA[<这是CDATA哟>上海x区</>]]></value> <!--注意CDATA用法-->
+        </property>
+    </bean>
+    <bean id="car2" parent="bmw1" scope="singleton"/> <!--继承自bmw1-->
+
+
+
+</beans>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.springtest"
+    resource-pattern="beans/A*.class"/>
+    <!--下面展示了通过p property constructor-arg等方式定义bean  -->
+    <bean id="bmw1" class="com.springtest.beans.Car" p:name="宝马5系"
+    init-method="init"
+    destroy-method="destroy">
+        <property name="price" value="40000"/>
+        <property name="speed" value="280"/>
+        <property name="cop">
+            <value><![CDATA[<这是CDATA哟>上海x区</>]]></value> <!--注意CDATA用法-->
+        </property>
+    </bean>
+    <bean id="bmw2" class="com.springtest.beans.Car">
+        <constructor-arg value="大众-进品" index="0"/>
+        <constructor-arg value="宝马3" index="1"/>
+        <constructor-arg value="300" index="2" type="int"/>
+        <property name="price" value="300000"/>
+    </bean>
+
+    <!--静态工厂方法创建Car-->
+    <bean id="car3" class="com.springtest.beans.CarFactory"
+    factory-method="makeCar">
+        <constructor-arg value="CarFactory Make car"/>
+    </bean>
+
+    <bean id="carFactory" class="com.springtest.beans.CarFactory"/>
+    <bean id="car4" class="com.springtest.beans.Car"
+          factory-bean="carFactory">
+        <constructor-arg value="CarFactory 实例 Make car"/>
+    </bean>
+
+    <bean id="car5" class="com.springtest.beans.CarFactoryBean"
+         >
+        <constructor-arg value=" CarFactoryBean Make car"/>
+    </bean>
+
+    <util:list id="bmws">
+        <ref bean="bmw1"/>
+        <ref bean="bmw2"/>
+
+    </util:list>
+
+    <bean id="person1" class="com.springtest.beans.Person">
+        <property name="name" value="张三"/>
+        <property name="mainCar" ref="bmw1"/>
+        <property name="addr">
+            <null/>
+        </property>
+        <property name="cars" ref="bmws"/> <!--引用预定义的全局list-->
+    </bean>
+
+    <bean id="person2" class="com.springtest.beans.Person" p:name="李四">
+        <property name="mainCar">
+            <bean id="bmw1" class="com.springtest.beans.Car" p:name="宝马125系">
+                <property name="price" value="140000"/>
+                <property name="speed" value="280"/>
+                <property name="cop">
+                    <value><![CDATA[<这是CDATA哟>他自己做的车,牛6钮</>]]></value> <!--注意CDATA用法-->
+                </property>
+            </bean>
+        </property>
+
+        <property name="mainCar.price" value="500000"/>
+        <property name="addr" value="地址:重庆">
+        </property>
+        <property name="cars">
+            <list> <!--list的定义 -->
+                <ref bean="bmw1"/>
+                <bean id="bmw1" class="com.springtest.beans.Car" p:name="宝马125系-第二辆哦">
+                    <property name="price" value="140000"/>
+                    <property name="speed" value="280"/>
+                    <property name="cop">
+                        <value><![CDATA[<这是CDATA哟>他自己做的车,牛6钮</>]]></value> <!--注意CDATA用法-->
+                    </property>
+
+                </bean>
+            </list>
+        </property>
+
+        <property name="contacts">
+            <map><!--map的定义 -->
+                <entry key="home" value-ref="person1"/>
+            </map>
+        </property>
+
+    </bean>
+
+
+
+    <context:property-placeholder location="file:configs/db.properties"/>
+    <bean id="serverConfig" class="com.springtest.beans.ServerConfig">
+        <property name="host" value="127.0.0.1"/>
+        <property name="port" value="8080"/>
+
+        <property name="user" value="${user}"/>
+        <property name="passwor" value="${passwor}"/>
+        <property name="driverclass" value="${driverclass}"/>
+        <property name="jdbcurl" value="${jdbcurl}"/>
+
+        <property name="properties">
+            <props>
+                <prop key="user">root</prop>
+                <prop key="password">123546</prop>
+            </props>
+        </property>
+
+    </bean>
+
+    <bean class="com.springtest.MyBeanPostProcessor"/>
+</beans>
