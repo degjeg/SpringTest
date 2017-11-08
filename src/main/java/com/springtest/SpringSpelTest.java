@@ -1,5 +1,6 @@
 package com.springtest;
 
+import com.springtest.beans.AutoScanTest1;
 import com.springtest.beans.Car;
 import com.springtest.beans.Person;
 import org.springframework.context.ApplicationContext;
